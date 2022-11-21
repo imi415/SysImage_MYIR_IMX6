@@ -26,7 +26,7 @@ jobs:
         echo BR2_CCACHE=y >> external_tree/configs/myir_myd_y6ulx_defconfig
         echo BR2_CCACHE_DIR="${{ github.workspace }}/cache/ccache" >> external_tree/configs/myir_myd_y6ulx_defconfig
     - name: "Configure buildroot"
-      workding-directory: "tree"
+      working-directory: "tree"
       run: "./buildroot_make.sh myir_myd_y6ulx_defconfig"
     - name: "Build system image"
       working-directory: "tree"
