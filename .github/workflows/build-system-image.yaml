@@ -22,9 +22,9 @@ jobs:
     - name: "Patch defconfig"
       working-directory: "tree"
       run: |
-        echo BR2_DL_DIR="${{ github.workspace }}/cache/dl" >> external_tree/configs/myir_myd_y6ulx_defconfig
+        echo BR2_DL_DIR=\"${{ github.workspace }}/cache/dl\" >> external_tree/configs/myir_myd_y6ulx_defconfig
         echo BR2_CCACHE=y >> external_tree/configs/myir_myd_y6ulx_defconfig
-        echo BR2_CCACHE_DIR="${{ github.workspace }}/cache/ccache" >> external_tree/configs/myir_myd_y6ulx_defconfig
+        echo BR2_CCACHE_DIR=\"${{ github.workspace }}/cache/ccache\" >> external_tree/configs/myir_myd_y6ulx_defconfig
     - name: "Configure buildroot"
       working-directory: "tree"
       run: "./buildroot_make.sh myir_myd_y6ulx_defconfig"
