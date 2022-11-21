@@ -1,0 +1,43 @@
+name: "Build baremetal toolchain"
+on: ["push"]
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+    - name: "Checkout repository"
+     uses: "actions/checkout@v3"
+      with:
+        submodules: "true"
+        path: "tree"
+    - name: "Buildroot dependencies"
+      run: |
+        sudo apt-get install -y gperf help2man libtool-bin meson ninja-build
+        mkdir -p ${{ github.workspace }}/cache/dl
+        mkdir -p ${{ github.workspace }}/cache/ccache
+    - name: "Cache management"
+      uses: actions/cache@v3
+      with:
+        path: "cache"
+        key: ${{ runner.os }}-buildroot-cache
+    - name: "Patch defconfig"
+      working-directory: "tree"
+      run: |
+        echo BR2_DL_DIR="${{ github.workspace }}/cache/dl" >> external_tree/configs/myir_myd_y6ulx_defconfig
+        echo BR2_CCACHE=y >> external_tree/configs/myir_myd_y6ulx_defconfig
+        echo BR2_CCACHE_DIR="${{ github.workspace }}/cache/ccache" >> external_tree/configs/myir_myd_y6ulx_defconfig
+    - name: "Configure buildroot"
+      workding-directory: "tree"
+      run: "./buildroot_make.sh myir_myd_y6ulx_defconfig"
+    - name: "Build system image"
+      working-directory: "tree"
+      run: "./buildroot_make.sh" 
+    - name: "Archive image contents"
+      working-directory: "tree/output"
+      run: "tar -cvzf myc-y6ulx-images-${{ github.sha }}.tar.gz images"
+    - name: "Publish artifact"
+      uses: "actions/upload-artifact@v3"
+      with:
+        name: "system image archive"
+        path: |
+          tree/output/myc-y6ulx-images-${{ github.sha }}.tar.gz
+        retention-days: 30
