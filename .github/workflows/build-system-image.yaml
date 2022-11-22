@@ -28,6 +28,10 @@ jobs:
     - name: "Configure buildroot"
       working-directory: "tree"
       run: "./buildroot_make.sh myir_myd_y6ulx_defconfig"
+    - name: "Create default user"
+      working-directory: "tree"
+      run: |
+        echo "imi415 1000 imi415 1000 =${{ github.sha }} /home/imi415 /bin/bash wheel imi415" > external_tree/customizations/users.table
     - name: "Build system image"
       working-directory: "tree"
       run: "./buildroot_make.sh" 
